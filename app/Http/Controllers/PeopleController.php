@@ -15,6 +15,7 @@ class PeopleController extends Controller
      */
     public function index()
     {
+// ESTA FUNÇÃO RETORNA TODAS AS PESSOAS CADASTRADAS
         return People::get();
     }
 
@@ -36,6 +37,7 @@ class PeopleController extends Controller
      */
     public function store(PeopleRequest $request)
     {
+// AQUI INSERIMOS UMA PESSOA NO BANCO DE DADOS
         $data_insert = $request->all();
         unset($data_insert['_method']);
         unset($data_insert['id']);
@@ -50,6 +52,7 @@ class PeopleController extends Controller
      */
     public function show($id)
     {
+// ESTÁ FUNÇÃO RETORNA OS DETALHES DE UMA PESSOA COM BASE NO ID PASSADO
         return People::findOrFail($id);
     }
 
@@ -73,6 +76,7 @@ class PeopleController extends Controller
      */
     public function update(PeopleRequest $request, $id)
     {
+// AQUI ATUALIZAMOS UMA PESSOA NO BANCO DE DADOS
         $data_update = $request->all();
         unset($data_update['_method']);
         return People::where('id', $id)->update($data_update);
@@ -86,6 +90,7 @@ class PeopleController extends Controller
      */
     public function destroy($id)
     {
+// AQUI DELETAMOS UM DADO DO BANCO DE DADOS
         return People::where('id', $id)->delete();
     }
 }

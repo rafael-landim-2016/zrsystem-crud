@@ -24,6 +24,7 @@ class PeopleRequest extends FormRequest
      */
     public function rules()
     {
+// AQUI FAZEMOS O TRATAMENTO DOS DADOS (VALIDAÇÃO)
         return [
             'name' => 'required|min:5',
             'birth_date'  => 'date_format:Y-m-d|before:today',
@@ -43,6 +44,7 @@ class PeopleRequest extends FormRequest
 
     public function messages()
     {
+// AQUI SETAMOS AS FRASES PARA VALIDAÇÃO
         return [
             'birth_date.before' => 'Digite uma data válida',
             'name.min' => 'Digite uma nome válido',

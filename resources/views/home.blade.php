@@ -186,6 +186,8 @@
 <script type="text/javascript" src="{{asset('js/datatables.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/sweetalert.js')}}"></script>
 <script type="text/javascript">
+
+// FUNÇÃO PARA ADICIONAR PESSOAS
     function add_people() {
         $('#people')[0].reset();    
         $('#people').attr('action', '{{route("people.store")}}');
@@ -193,7 +195,7 @@
         $('#id').val('');
         $('#exampleModal').modal('show');
     }
-
+// FUNÇÃO PARA EDITAR PESSOAS
     function edit_people(id) {
         Swal.fire({
             text: "Aguarde...",
@@ -209,24 +211,41 @@
             $('#_method').val('PUT');
         })    
     }
-
+// FUNÇÃO PARA DELETAR PESSOAS
     function delete_people(id) {
-        $.ajax({
-            url: $('#delete_people').attr('action')+`/${id}`,
-            type: 'DELETE',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            success: function () {
+        Swal.fire({
+            title: 'Deletar esta pessoa?',
+            text: 'Esta ação não poderá ser desfeita.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#258954',
+            cancelButtonColor: '#e06666',
+            confirmButtonText: 'Sim, deletar',
+            cancelButtonText: `Não, cancelar`,
+        }).then((result) => {
+            if (result.isConfirmed) {
                 Swal.fire({
-                    title: 'Sucesso!',
-                    text: "Esta pessoa foi deletada dos nossos registros.",
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                    text: "Aguarde...",
+                })
+                Swal.showLoading();
+                $.ajax({
+                    url: $('#delete_people').attr('action')+`/${id}`,
+                    type: 'DELETE',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    success: function () {
+                        Swal.fire({
+                            title: 'Sucesso!',
+                            text: "Esta pessoa foi deletada dos nossos registros.",
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        table.ajax.reload();
+                    }
                 });
-                table.ajax.reload();
             }
-        });
+        })
     }
-
+// MASCARAS PARA CEP, CPF E TELEFONE
     $('.cep').mask('00000-000');
     $("#phone_number").inputmask({
         mask: ["(99) 9999-9999", "(99) 99999-9999", ],
@@ -243,6 +262,7 @@
     };
     $('.cpf').mask(cpfMascara, cpfOptions);
 
+// FUNÇÃO PARA BUSCAR OS DADOS DO CEP
     $('.cep').keyup(function(){
         if(this.value.length == 9){
             $.get("https://viacep.com.br/ws/"+this.value+"/json/", function(data){
@@ -258,6 +278,8 @@
             $('#state').val('');
         }
     });
+
+// VALIDANDO O CPF
     $('#cpf_or_cnpj').keyup(function(){
         if(formata_cpf_cnpj(this.value)){
             $(this).removeClass('is-invalid');
@@ -267,6 +289,7 @@
             $(this).addClass('is-invalid');
         }
     });
+// FUNÇÃO QUE TRATA O ENVIO DO FORMULÁRIO, TANTO PARA ADICIONAR QUANTO PARA EDITAR PESSOAS
     $('#people').submit(function(e){
         e.preventDefault();
 
@@ -320,7 +343,7 @@
     });
     
     var table = '';
-
+// CRIANDO A TABELA USANDO DATATABLES
     $(document).ready(function () {
         table = $('#myTable').DataTable({
             responsive: true,
